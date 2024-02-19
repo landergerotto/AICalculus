@@ -4,8 +4,10 @@ namespace AIContinuous;
 
 public class Root
 {
-    public static double Bissction(Func<double, double> function, double a, double b,
-                                    double tol = 1e-4, int maxIter = 1000)
+    public static double Bissction
+    (   Func<double, double> function, double a, double b,
+        double tol = 1e-4, int maxIter = 1000
+    )
     {
         var dt0 = DateTime.Now;
         double c = 0;
@@ -15,6 +17,7 @@ public class Root
             c = (a + b) / 2.0;
             var fc = function(c);
 
+            // absolute tolerance
             if (Math.Abs(fc) < tol)
                 break;
 
@@ -27,8 +30,6 @@ public class Root
             else
                 b = c;
             
-
-
         }
         var dt1 = DateTime.Now;
         var diff = dt1 - dt0;
@@ -54,6 +55,8 @@ public class Root
             c = a - fa*(b - a)/(fb - fa);
             
             var fc = function(c);
+
+            // absolute tolerance
             if (Math.Abs(fc) < tol)
                 break;
 

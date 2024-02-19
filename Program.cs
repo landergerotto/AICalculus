@@ -1,4 +1,5 @@
 ﻿using System;
+
 using AIContinuous;
 
 double myFuction(double x)
@@ -8,7 +9,7 @@ double myFuction(double x)
     return Math.Sqrt(x) - Math.Cos(x);
 }
 
-double sol = Root.Bissction(myFuction, 0, 4);
+double sol = Root.FalsePosition(myFuction, 0, 1);
 
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine(sol);
