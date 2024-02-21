@@ -75,4 +75,30 @@ public class Root
 
         return c;
     }
+
+    public static double Newton
+    (
+        Func<double, double> function, 
+        Func<double, double> derivate, 
+        double x0,
+        double tol = 1e-4, 
+        int maxIter = 10000
+    )
+    {
+        double x = 0;
+
+        for (int i = 0; i < maxIter; i++)
+        {   
+            var f0 = function(x0);
+            var fd = derivate(x0);
+            x = x0 - f0 / fd;
+
+            if (Math.Abs(x - x0) < tol)
+                break;
+
+            x0 = x;
+        }
+
+        return x;
+    }
 }
