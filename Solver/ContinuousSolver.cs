@@ -5,7 +5,8 @@ namespace AIContinuous;
 public class Root
 {
     public static double Bissction
-    (   Func<double, double> function, double a, double b,
+    (   Func<double, double> function,
+         double a, double b,
         double tol = 1e-4, int maxIter = 1000
     )
     {
@@ -36,7 +37,8 @@ public class Root
 
     public static double FalsePosition
     (
-        Func<double, double> function, double a, double b,
+        Func<double, double> function, 
+        double a, double b,
         double tol = 1e-4, int maxIter = 1000
     )
     {
