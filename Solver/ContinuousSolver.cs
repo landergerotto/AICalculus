@@ -29,7 +29,6 @@ public class Root
                 a = c;
             else
                 b = c;
-            
         }
 
         return c;
