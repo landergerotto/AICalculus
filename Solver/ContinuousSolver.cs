@@ -9,7 +9,6 @@ public class Root
         double tol = 1e-4, int maxIter = 1000
     )
     {
-        var dt0 = DateTime.Now;
         double c = 0;
 
         for (int i = 0; i < maxIter; i++)
@@ -31,10 +30,6 @@ public class Root
                 b = c;
             
         }
-        var dt1 = DateTime.Now;
-        var diff = dt1 - dt0;
-
-        Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
 
         return c;
     }
@@ -45,7 +40,6 @@ public class Root
         double tol = 1e-4, int maxIter = 1000
     )
     {
-        var dt0 = DateTime.Now;
         double c = 0;
 
         for (int i = 0; i < maxIter; i++)
@@ -60,7 +54,8 @@ public class Root
             if (Math.Abs(fc) < tol)
                 break;
 
-            if (b - a < tol * 2.0)
+            // relative tolerance
+            if ((b - a) < tol * 2.0)
                 break;
 
             if (fc * fa > 0)
@@ -68,10 +63,6 @@ public class Root
             else
                 b = c;
         }
-        var dt1 = DateTime.Now;
-        var diff = dt1 - dt0;
-
-        Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
 
         return c;
     }
@@ -85,18 +76,17 @@ public class Root
         int maxIter = 10000
     )
     {
-        double x = 0;
+        double x = x0;
 
         for (int i = 0; i < maxIter; i++)
         {   
-            var f0 = function(x0);
-            var fd = derivate(x0);
-            x = x0 - f0 / fd;
+            var f0 = function(x);
+            var fd = derivate(x);
+            x -= f0 / fd;
 
-            if (Math.Abs(x - x0) < tol)
+            // absolute tolerance
+            if (Math.Abs(f0) < tol)
                 break;
-
-            x0 = x;
         }
 
         return x;
