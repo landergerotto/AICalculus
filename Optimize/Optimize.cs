@@ -18,8 +18,7 @@ public static class Optimize
         Func<double, double> diffSecondFunction = x 
             => Diff.Differentiate3P(diffFunction, x, h);
 
-        Root.Newton(diffFunction, diffSecondFunction, x0, tol, maxIter);
+        return Root.Newton(diffFunction, diffSecondFunction, x0, tol, maxIter);
 
-        return 0.0;
     }
 }
