@@ -15,6 +15,7 @@ public static class Optimize
     {
         Func<double, double> diffFunction = x 
             => Diff.Differentiate3P(func, x, h);
+            
         Func<double, double> diffSecondFunction = x 
             => Diff.Differentiate3P(diffFunction, x, h);
 

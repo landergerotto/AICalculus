@@ -7,7 +7,7 @@ public class Root
     public static double Bissction
     (   Func<double, double> function,
          double a, double b,
-        double tol = 1e-4, int maxIter = 1000
+        double tol = 1e-4, int maxIter = 1_000
     )
     {
         double c = 0;
@@ -39,7 +39,7 @@ public class Root
     (
         Func<double, double> function, 
         double a, double b,
-        double tol = 1e-4, int maxIter = 1000
+        double tol = 1e-4, int maxIter = 1_000
     )
     {
         double c = 0;
@@ -75,7 +75,7 @@ public class Root
         Func<double, double> derivate, 
         double x0,
         double tol = 1e-4, 
-        int maxIter = 10000
+        int maxIter = 10_000
     )
     {
         double x = x0;

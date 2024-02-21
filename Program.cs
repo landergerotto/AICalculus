@@ -18,7 +18,7 @@ double NewtonFunction(double x)
 var date = DateTime.Now;
 
 date = DateTime.Now;
-double sold = Optimize.Newton(NewtonFunction, -10_000.0);
+double sold = Optimize.Newton(NewtonFunction, 1.0);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
