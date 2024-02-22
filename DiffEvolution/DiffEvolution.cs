@@ -54,6 +54,19 @@ public class DiffEvoltuion
         bestIndividualFitness = fitnessBest;
     }
 
+    private double[] Mutate(double[] individual)
+    {
+        var newIndiviual = new double[this.Dimension];
+        newIndiviual = individuals[bestIndividualIndex];
+        for (int i = 0; i < this.Dimension; i++)
+        {
+            newIndiviual[i] += individuals[Random.Shared.Next(Npop)][i] 
+                             - individuals[Random.Shared.Next(Npop)][i];
+        }
+
+        return newIndiviual;
+    }
+
     public double[] Optimize()
     {
         GeneratePopulation();
