@@ -14,7 +14,7 @@ public static class Diff
         double h = 1e-2
     )
         => (
-              function(x + h)
+              function(x + 2 * h)
             - function(x - h)
            ) / (2.0 * h);
 

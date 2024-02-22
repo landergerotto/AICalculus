@@ -28,13 +28,23 @@ double NDimFunction (double[] dims)
          + (2 * dims[0] + dims[1] -5) * (2 * dims[0] + dims[1] -5);
 }
 
+double RosenBrookFunction (double[] dims)
+{   
+    var n = dims.Length - 1;
+    double hellyeah = 0;
+    for (int i = 0; i < n; i++)
+        hellyeah += 100 * (dims[i + 1] - dims[i] * dims[i]) * (dims[i + 1] - dims[i] * dims[i]) + (1 - dims[i]) * (1 - dims[i]);
+    
+    return hellyeah;
+}
 
 var date = DateTime.Now;
 
 date = DateTime.Now;
-double[] sold = Optimize.DescendentGradient(NDimFunction, new double[]{1, 10});
+double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
 Console.WriteLine(sold[0]);
 Console.WriteLine(sold[1]);
+
