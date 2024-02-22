@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace AIContinuous;
 
@@ -38,6 +39,39 @@ public static class Optimize
             diff = Diff.Differentiate3P(func, xp);
             xp -= learningRate * diff;
         }
+
+        return xp;
+    }
+
+    public static double[] DescendentGradient
+    (
+        Func<double[], double> func, 
+        double[] x0,
+        double learningRate = 1e-2, // LR lr Lr lR
+        double tol = 1e-4
+    )
+    {
+        var dim = x0.Length;
+        var xp = (double [])x0.Clone();
+
+        double diffNorm;
+
+        var diff = Diff.Gradient(func, xp);
+
+        do
+        {   
+            diffNorm = 0.0;
+
+            diff = Diff.Gradient(func, xp);
+
+            for (int i = 0; i < dim; i++)
+            {
+                xp[i]    -= learningRate * diff[i];
+                diffNorm += Math.Abs(diff[i]);
+            }
+
+            
+        } while (diffNorm > tol * dim);
 
         return xp;
     }

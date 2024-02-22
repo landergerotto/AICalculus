@@ -17,10 +17,13 @@ double NewtonFunction(double x)
     return (x - 1) * (x - 1) + Math.Sin(x * x * x);
 }
 
+// double NDimFunction (double[x] )
+
+
 var date = DateTime.Now;
 
 date = DateTime.Now;
-double sold = Optimize.Minimum(NewtonFunction);
+double sold = Optimize.DescendentGradient(NewtonFunction, 1.2);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
