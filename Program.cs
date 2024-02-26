@@ -47,16 +47,17 @@ List<double[]> bounds = new() {
     new double[]{-10, 10},
     new double[]{-10, 10},
     new double[]{-10, 10},
-
+    new double[]{-10, 10},
+    new double[]{-10, 10}
 };
 
 var date = DateTime.Now;
 
-var evol = new DiffEvoltuion(RosenBrookFunction, 200, bounds);
+var evol = new DiffEvoltuion(RosenBrookFunction, bounds, 200);
 
 date = DateTime.Now;
 // double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
-var Evol = evol.Optimize(500);
+var Evol = evol.Optimize(800);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
