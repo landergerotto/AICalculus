@@ -38,26 +38,24 @@ double RosenBrookFunction (double[] dims)
     return hellyeah;
 }
 
+double Restriction(double[] dims)
+{
+
+    return -1.0;
+}
+
 List<double[]> bounds = new() { 
     new double[]{-10, 10},
     new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10},
-    new double[]{-10, 10}
 };
 
 var date = DateTime.Now;
 
-var evol = new DiffEvoltuion(RosenBrookFunction, bounds, 200);
+var evol = new DiffEvoltuion(RosenBrookFunction, bounds, 200, Restriction);
 
 date = DateTime.Now;
 // double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
-var Evol = evol.Optimize(800);
+var Evol = evol.Optimize(200);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
