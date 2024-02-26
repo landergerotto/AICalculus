@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using AIContinuous;
 
 double myFuction(double x)
@@ -38,13 +38,28 @@ double RosenBrookFunction (double[] dims)
     return hellyeah;
 }
 
+List<double[]> bounds = new() { 
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+    new double[]{-10, 10},
+
+};
+
 var date = DateTime.Now;
 
+var evol = new DiffEvoltuion(RosenBrookFunction, 200, bounds);
+
 date = DateTime.Now;
-double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
+// double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
+var Evol = evol.Optimize(500);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
-Console.WriteLine(sold[0]);
-Console.WriteLine(sold[1]);
+Console.WriteLine(Evol[0]);
+Console.WriteLine(Evol[1]);
 
