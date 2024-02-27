@@ -41,8 +41,19 @@ double RosenBrookFunction (double[] dims)
 double Restriction(double[] dims)
 {
 
-    // return -1.0;
-    return dims[0] * dims[0] + dims[1] * dims[1] - 2.0;
+    return -1.0;
+    // return dims[0] * dims[0] + dims[1] * dims[1] - 2.0;
+    // return (dims[0] - 1) * (dims[0] - 1) * (dims[0] - 1) - dims[1] + 1.0 - 2.0;
+
+}
+
+double RocketFunction(double[] mes)
+{
+    var Rocket = new Rocket();
+
+    Rocket.Launch(mes);
+
+    return -Rocket.Height;
 }
 
 List<double[]> bounds = new() { 
@@ -50,9 +61,17 @@ List<double[]> bounds = new() {
     new double[]{-10, 10},
 };
 
+List<double[]> RocketBounds = new() { 
+    new double[]{0.0, 3500},
+    new double[]{0.0, 3500},
+    new double[]{0.0, 3500},
+    new double[]{0.0, 3500},
+    new double[]{0.0, 3500},
+};
+
 var date = DateTime.Now;
 
-var evol = new DiffEvoltuion(RosenBrookFunction, bounds, 200, Restriction);
+var evol = new DiffEvoltuion(RocketFunction, RocketBounds, 100, Restriction);
 
 date = DateTime.Now;
 // double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
@@ -61,5 +80,5 @@ var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
 Console.WriteLine(Evol[0]);
-Console.WriteLine(Evol[1]);
+// Console.WriteLine(Evol[1]);
 
