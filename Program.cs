@@ -71,11 +71,11 @@ List<double[]> RocketBounds = new() {
 
 var date = DateTime.Now;
 
-var evol = new DiffEvoltuion(RocketFunction, RocketBounds, 100, Restriction);
+var evol = new DiffEvolution(RocketFunction, RocketBounds, 1000, Restriction);
 
 date = DateTime.Now;
 // double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
-var Evol = evol.Optimize(100);
+var Evol = evol.Optimize(1000);
 var diff = DateTime.Now - date;
 
 Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");

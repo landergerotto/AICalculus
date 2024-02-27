@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AIContinuous;
 
-public class DiffEvoltuion
+public class DiffEvolution
 {
     protected int Npop                          { get; set; }
     protected int Dimension                     { get; set; }
@@ -18,7 +18,7 @@ public class DiffEvoltuion
     private double[] IndividualsRestrictions    { get; set; }
     private double[] IndividualsFitness         { get; set; }
 
-    public DiffEvoltuion
+    public DiffEvolution
     (
         Func<double[], double> fitness, 
         List<double[]> bounds,

@@ -110,6 +110,8 @@ public class Rocket
 
     private void Calculateheight(double me, int increment)
     {
+        if (this.EnergyMass < 0)
+            me = 0;
         this.GetUpForce(me);
         this.GetDragForce();
         this.GetGravityForce();
@@ -119,7 +121,7 @@ public class Rocket
         var h =  this.GetHeight(increment);
         if (h > this.Height)
             this.Height = h;
-            
+
         this.EnergyMass -= me;
         if (this.EnergyMass < 0)
             this.EnergyMass = 0;    
@@ -133,7 +135,7 @@ public class Rocket
         do
         {   
             if (i > me.Length)
-                this.Calculateheight(me[0], i);
+                this.Calculateheight(0, i);
             else
                 this.Calculateheight(me[i], i);
 
