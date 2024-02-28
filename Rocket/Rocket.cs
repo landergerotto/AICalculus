@@ -1,13 +1,15 @@
 using System;
 using System.Reflection.Metadata;
-
+using AIContinuous.Nuenv;
 using AIContinuous.Rocket;
 
+namespace RocketSim;
 public class Rocket
 {
-    public double Mass              { get; set; } = 750;  // kg
+    public double EmptyMass         { get; set; } = 750;  // kg
     public double EnergyMass        { get; set; } = 3500; // kg
     public double Diameter          { get; set; } = 0.6;  // m
+    public double CrossSectionArea  { get; set; } = 0.6;  // m
     public double ExhaustionSpeed   { get; set;} = 1916;  // m/s
     public double DragCoefficient   { get; set;} = 0.8;
 
@@ -18,12 +20,24 @@ public class Rocket
     public double Acceleration      { get; set; }
     public double Speed             { get; set; }
     public double Height            { get; set; }
+    public double Mass              { get; set; }
+    public double Time              { get; set; } = 0.0;
+    public double[] TimeData        { get; set; }
+    public double[] MassFlowData    { get; set; }
 
+    public Rocket(double[] timeData, double[] massFlowData) 
+    { 
+        this.TimeData = (double[])timeData.Clone();
+        this.MassFlowData = (double[])massFlowData.Clone();
+        this.CrossSectionArea = Math.PI * this.Diameter * this.Diameter / 4;
 
-    public Rocket() { }
+        this.Mass = this.EmptyMass + Integrate.Romberg(this.TimeData, this.MassFlowData);
+    }
 
     public Rocket
     (
+        double[] timeData, 
+        double[] massFlowData,
         double mass, 
         double energyMass, 
         double diameter, 
@@ -31,65 +45,53 @@ public class Rocket
         double dragCoefficient
     )
     {
-        this.Mass = mass;
+        this.TimeData = (double[])timeData.Clone();
+        this.MassFlowData = (double[])massFlowData.Clone();
+        this.EmptyMass = mass;
         this.EnergyMass = energyMass;
         this.Diameter = diameter;
         this.ExhaustionSpeed = exhaustionSpeed;
         this.DragCoefficient = dragCoefficient;
+        this.CrossSectionArea = Math.PI * this.Diameter * this.Diameter / 4;
+
+        this.Mass = this.EmptyMass + Integrate.Romberg(this.TimeData, this.MassFlowData);
     }
 
-    private double GetAcceleration()
+    private void UpdateSpeed(double time, double dt)
     {
-        double TotalMass = this.Mass + this.EnergyMass;
+        GetAcceleration(time);
+        double speed = this.Acceleration * dt;
 
-        double accel = (UpForce - DragForce - GravityForce) / TotalMass;
-
-        this.Acceleration = accel;
-
-        return accel;
+        this.Speed += speed;
     }
 
-    private double GetSpeed(double accel, double dt)
+    private void UpdateHeight(double dt)
+        => this.Height += this.Speed * dt;
+    
+    private void UpdateMass(double time, double dt)
+        => this.Mass -= dt *( ( GetMassFlow(time) + GetMassFlow(time + dt) ) * 0.5 );
+    
+    private double GetDragForce(double speed, double height)
     {
-        double speed = accel * dt;
+        var airDensity = Atmosphere.Density(height);
+        var airTemperature = Atmosphere.Temperature(height);
+        var cd = Drag.Coefficient(speed, airTemperature, this.DragCoefficient);
+        var area = this.CrossSectionArea;
 
-        this.Speed = speed;
-
-        return speed;
-    }
-    private double GetSpeed(double dt)
-        => GetSpeed(this.Acceleration, dt);
-
-    private double GetHeight(double speed, double dt)
-    {
-        double height = speed * dt;
-
-        this.Height = height;
-
-        return height;
-    }
-    private double GetHeight(double dt)
-        => GetHeight(this.Height, dt);
-
-    private double GetDragForce(double height)
-    {
-        var density = Atmosphere.Density(height);
-        var area = Math.PI * this.Diameter / 4;
-
-        double drag = 0.5 * this.DragCoefficient * density * area * this.Speed * this.Speed * 1;
+        double drag = - 0.5 * cd * airDensity * area * speed * speed * Math.Sign(speed);
 
         this.DragForce = drag;
 
         return drag;
     }
 
-    private double GetDragForce()
-        => GetDragForce(this.Height);
+    private double GetDragForce(double speed)
+        => GetDragForce(speed, this.Height);
 
     private double GetGravityForce(double height)
     {
         var grav = Gravity.GetGravity(height);
-        var force = this.Mass + this.EnergyMass * grav;
+        var force = - (this.EmptyMass + this.EnergyMass) * grav;
 
         this.GravityForce = force;
 
@@ -99,48 +101,64 @@ public class Rocket
     private double GetGravityForce()
         => GetGravityForce(this.Height);
 
-    private double GetUpForce(double me)
+    private double GetMassFlow(double time)
+        => Interp1D.Linear(this.TimeData, this.MassFlowData, time, true);
+
+    private double GetUpForce(double time)
     {
-        var up = me * this.ExhaustionSpeed;
+        var up = this.GetMassFlow(time) * this.ExhaustionSpeed;
         
         this.UpForce = up;
 
         return up;
     }
-
-    private void Calculateheight(double me, int increment)
+    private double GetAcceleration(double time)
     {
-        if (this.EnergyMass < 0)
-            me = 0;
-        this.GetUpForce(me);
-        this.GetDragForce();
+        this.GetUpForce(time);
+        this.GetDragForce(this.Speed);
         this.GetGravityForce();
 
-        this.Acceleration = this.GetAcceleration();
-        this.Speed = this.GetSpeed(increment);
-        var h =  this.GetHeight(increment);
-        if (h > this.Height)
-            this.Height = h;
+        double TotalMass = this.EmptyMass + this.EnergyMass;
 
-        this.EnergyMass -= me;
-        if (this.EnergyMass < 0)
-            this.EnergyMass = 0;    
+        double accel = (UpForce + DragForce + GravityForce) / TotalMass;
+
+        this.Acceleration = accel;
+
+        return accel;
     }
-    public void Launch(double[] me)
+    public void FlyALittleBit(double dt)
     {
         // Preparacao Inicial, pegar aceleracao inicial, alt e vel
 
         // fazer calculos ao longo do tempo para vermos o nosso fracasso
-        var i = 0;
-        do
-        {   
-            if (i > me.Length)
-                this.Calculateheight(0, i);
-            else
-                this.Calculateheight(me[i], i);
 
-            i++;
-        } while (this.Speed > 0);
+        UpdateSpeed(this.Time, dt);
+        UpdateHeight(dt);
+        UpdateMass(this.Time, dt);
+
     }
 
+    public double Launch(double time, double dt = 1e-1)
+    {
+        for (double t = 0.0; t < time; t += dt)
+            FlyALittleBit(dt);
+        
+        return this.Height;
+    }
+
+    public double LaunchUntilMax(double dt = 1e-1)
+    {
+        do FlyALittleBit(dt); 
+        while (this.Speed > 0);
+        
+        return this.Height;
+    }
+
+    public double LaunchUntilGround(double dt = 1e-1)
+    {
+        do FlyALittleBit(dt); 
+        while (this.Height > 0);
+        
+        return this.Height;
+    }
 }

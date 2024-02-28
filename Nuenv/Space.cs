@@ -6,11 +6,24 @@ namespace AIContinuous.Nuenv;
 
 public static class Space
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="count"></param>
+    /// <returns>Returns an array with the same value</returns>
     public static double[] Uniform(double value, int count)
     {
         return Enumerable.Repeat(value, count).ToArray();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <param name="n"></param>
+    /// <returns>Returns an equally spaced array</returns>
     public static double[] Linear(double a, double b, int n)
     {
         var result = new double[n];
@@ -24,6 +37,14 @@ public static class Space
         return result;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <param name="n"></param>
+    /// <returns>return an array that increases propotionally</returns>
+    /// <exception cref="ArgumentException"></exception>
     public static double[] Geometric(double a, double b, int n)
     {
         if (a == 0.0 || b == 0.0)

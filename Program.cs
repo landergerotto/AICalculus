@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using AIContinuous;
+using AIContinuous.Nuenv;
+using RocketSim;
 
 double myFuction(double x)
 {
@@ -47,14 +49,14 @@ double Restriction(double[] dims)
 
 }
 
-double RocketFunction(double[] mes)
-{
-    var Rocket = new Rocket();
+// double RocketFunction(double[] mes)
+// {
+//     var Rocket = new Rocket();
 
-    Rocket.Launch(mes);
+//     Rocket.FlyALittleBit(mes);
 
-    return -Rocket.Height;
-}
+//     return -Rocket.Height;
+// }
 
 List<double[]> bounds = new() { 
     new double[]{-10, 10},
@@ -69,16 +71,23 @@ List<double[]> RocketBounds = new() {
     new double[]{0.0, 3500},
 };
 
+var timeData = Space.Linear(0.0, 200.0, 11);
+var massFlowData = Space.Uniform(17.5, 11);
+
+
+var Rocket = new Rocket(timeData, massFlowData);
+
+
 var date = DateTime.Now;
 
-var evol = new DiffEvolution(RocketFunction, RocketBounds, 1000, Restriction);
+// var evol = new DiffEvolution(RocketFunction, RocketBounds, 1000, Restriction);
 
-date = DateTime.Now;
-// double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
-var Evol = evol.Optimize(1000);
-var diff = DateTime.Now - date;
+// date = DateTime.Now;
+// // double[] sold = Optimize.DescendentGradient(RosenBrookFunction, new double[]{10, 10}, 1e-6, 1e-9);
+// var Evol = evol.Optimize(1000);
+// var diff = DateTime.Now - date;
 
-Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
-Console.WriteLine(Evol[0]);
-// Console.WriteLine(Evol[1]);
+// Console.WriteLine("Executed in: " + diff.TotalMilliseconds + " Miliseconds");
+// Console.WriteLine(Evol[0]);
+Console.WriteLine(Rocket.LaunchUntilMax());
 
